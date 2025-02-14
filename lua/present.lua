@@ -2,8 +2,10 @@ local M = {}
 
 local function create_floating_window(opts)
     opts = opts or {}
-    local width = opts.width or math.floor(vim.o.columns * 0.8)
-    local height = opts.height or math.floor(vim.o.lines * 0.8)
+    -- local width = opts.width or math.floor(vim.o.columns * 0.8)
+    -- local height = opts.height or math.floor(vim.o.lines * 0.8)
+    local width = opts.width or vim.o.columns
+    local height = opts.height or vim.o.lines
     local col = math.floor((vim.o.columns - width) / 2)
     local row = math.floor((vim.o.lines - height) / 2)
 
@@ -12,11 +14,10 @@ local function create_floating_window(opts)
     local win_config = {
         relative = "editor",
         width = width,
-        height = height,
-        col = col,
+        height = height, col = col,
         row = row,
         style = "minimal",
-        border = "rounded", -- You can change this to "single", "double", etc.
+        border = { " "," "," "," "," "," "," "," ", }
     }
 
     local win = vim.api.nvim_open_win(buf, true, win_config)
@@ -29,7 +30,7 @@ M.setup = function()
 end
 
 ---@class present.Slides
----@fields slides string[]: The slides of the file
+---@field slides string[]: The slides of the file
 
 --- Takes some lines and parse them
 --- @param lines string[]: The lines in the buffer
@@ -78,10 +79,32 @@ M.start_presentation = function(opts)
         vim.api.nvim_win_close(float.win, true)
     end, { buffer = float.buf })
 
+    local restore = {
+        cmdheight = {
+            original = vim.o.cmdheight,
+            present = 0
+        }
+    }
+
+    -- Set the options we want during presentation
+    for option, config in pairs(restore) do
+        vim.opt[option] = config.present
+    end
+
+    vim.api.nvim_create_autocmd("BufLeave", {
+        buffer = float.buf,
+        callback = function()
+            -- Reset the values when we are done with the presentation
+            for option, config in pairs(restore) do
+                vim.opt[option] = config.original
+            end
+        end
+    })
+
     vim.api.nvim_buf_set_lines(float.buf, 0, -1, false, parsed.slides[1])
 end
 
-M.start_presentation({ bufnr = 10 })
+M.start_presentation({ bufnr = 11})
 -- vim.print(parse_slides({
 --     "# This is a heading",
 --     "This is somthing",
