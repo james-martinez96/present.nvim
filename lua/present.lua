@@ -33,7 +33,7 @@ local parse_slides = function(lines)
     local separator = "^#"
 
     for _, line in ipairs(lines) do
-        print(line, "found:", line:find(separator), "|")
+        -- print(line, "found:", line:find(separator), "|")
         if line:find(separator) then
             if #current_slide.title > 0 then
                 table.insert(slides.slides, current_slide)
