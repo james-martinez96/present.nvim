@@ -3,19 +3,20 @@
 this is a plugin for presenting markdown files.
 
 # Features: Neovim Lua Execution
-Can execute code in lua blocks, when you have them in a slide
+Present can execute code in Language Blocks, when you have them in a slide.
+Only one snippet per slide is currently supported.
 
 ```lua
 print("Hello World", 29)
 ```
 
 # Features: Other languages
-Can execute code in Language blocks, when you have them in a slide.
-You may need to configure this with `opts.executors`, only have Python and Javascript by default.
+You may need to configure this with `opts.executors`.
+Currently only Python and Javascript are supported by default.
 
 # Javascipt
 ```javascript
-console.log({myFiled: true, other: false})
+console.log({myField: true, other: false})
 ```
 
 # Python
@@ -28,7 +29,12 @@ print("hello world", 5 + 4)
 require("present").start_presentation({})
 ```
 
-Use `n`, and `p` to navigate markdown slides.
+Open a README.md
 
-Or use `:PresentStart` Command.
+use `:PresentStart` Command.
+
+Use `n`, and `p` to navigate markdown slides.
+use `q` to exit present.
+Use `x` to run a code block.
+Use `:q` to exit the code block execution.
 
